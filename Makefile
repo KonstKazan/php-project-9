@@ -12,11 +12,11 @@ validate:
 	composer validate
 
 lint:
-	composer exec --verbose phpcs -- --standard=PSR12
-	composer exec --verbose phpstan
+	composer exec --verbose phpcs -- --standard=PSR12 public
+	composer exec --verbose phpstan analyse public
 
 lint-fix:
-	composer exec --verbose phpcbf -- --standard=PSR12 src tests
+	composer exec --verbose phpcbf -- --standard=PSR12 public
 
 test:
 	composer exec --verbose phpunit tests

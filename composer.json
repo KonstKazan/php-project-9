@@ -3,12 +3,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Hexlet\\Code\\": "src/"
+            "PageAnalyzer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-          "Hexlet\\Code\\Tests\\": "tests"
+          "PageAnalyzer\\Tests\\": "tests"
         }
       },
     "authors": [
