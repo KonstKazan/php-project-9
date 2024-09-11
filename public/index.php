@@ -44,7 +44,8 @@ $app->get('/', function ($request, $response) {
 
 $app->post('/urls', function ($request, $response) use ($router, $pdo) {
     $urlData = $request->getParsedBodyParam('url');
-    $this->get('table')->insert($urlData['name']);
+    $create = 'now';
+    $this->get('table')->insert($urlData['name'], $create);
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('index.urls');
 
