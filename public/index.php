@@ -64,4 +64,12 @@ $app->post('/urls', function ($request, $response) use ($router, $pdo) {
     }
 })->setName('index.urls');
 
+$app->get('/urls', function ($request, $response) {
+    $urls = $this->get('table')->selectAll();
+    $params = [
+        'urls' => $urls
+    ];
+    return $this->get('renderer')->render($response, 'show.phtml', $params);
+})->setName('show');
+
 $app->run();
