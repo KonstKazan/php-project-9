@@ -48,6 +48,9 @@
             placeholder="https://www.example.com"
             >
                         </div>
+            <?php if (isset($errors)) : ?>
+            <div><?php print_r($errors) ?></div>
+            <?php endif ?>
             <div class="col-2">
                 <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
             </div>

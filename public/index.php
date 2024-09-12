@@ -5,6 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
 use DI\Container;
+use Valitron\Validator as V;
+use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
 use PageAnalyzer\InitDatabase;
@@ -15,6 +17,9 @@ $container->set('renderer', function () {
     return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
 });
 
+$container->set('flash', function () {
+    return new \Slim\Flash\Messages();
+});
 
 $container->set('connection', function () {
     return new Connection();
@@ -44,9 +49,19 @@ $app->get('/', function ($request, $response) {
 
 $app->post('/urls', function ($request, $response) use ($router, $pdo) {
     $urlData = $request->getParsedBodyParam('url');
-    $create = 'now';
-    $this->get('table')->insert($urlData['name'], $create);
-    return $this->get('renderer')->render($response, 'index.phtml');
+    $v = new Valitron\Validator($urlData);
+    $v->rule('email', 'name');
+    if ($v->validate()) {
+        $create = Carbon::now();
+        $this->get('table')->insert($urlData['name'], $create);
+        return $this->get('renderer')->render($response, 'index.phtml');
+    } else {
+        $params = [
+            'urlData' => $urlData,
+            'errors' => 'Некорректный url'
+        ];
+        return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
+    }
 })->setName('index.urls');
 
 $app->run();
