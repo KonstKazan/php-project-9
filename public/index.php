@@ -5,12 +5,16 @@ require __DIR__ . '/../vendor/autoload.php';
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
 use DI\Container;
-use Valitron\Validator as V;
+use Valitron\Validator;
 use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
 use PageAnalyzer\InitDatabase;
 use PageAnalyzer\Table;
+
+$conn = new Connection();
+$pdo = $conn->connect();
+$conn->initTables($pdo);
 
 $container = new Container();
 $container->set('renderer', function () {
@@ -21,19 +25,9 @@ $container->set('flash', function () {
     return new \Slim\Flash\Messages();
 });
 
-$container->set('connection', function () {
-    return new Connection();
-});
-
-$pdo = $container->get('connection')->connect();
-$init = new InitDatabase($pdo);
-$init->initTables();
-
 $container->set('table', function () use ($pdo) {
     return new Table($pdo);
 });
-
-
 
 $app = AppFactory::createFromContainer($container);
 $router = $app->getRouteCollector()->getRouteParser();
@@ -47,27 +41,37 @@ $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('index');
 
-$app->post('/urls', function ($request, $response) use ($router, $pdo) {
+$app->post('/urls', function ($request, $response) use ($router) {
     $urlData = $request->getParsedBodyParam('url');
     $v = new Valitron\Validator($urlData);
-    $v->rule('email', 'name');
+    $v->rule('required', 'name')->message('URL не должен быть пустым');
+    $v->rule('url', 'name')->message('Некорректный URL');
     if ($v->validate()) {
         $create = Carbon::now();
-        $this->get('table')->insert($urlData['name'], $create);
-        return $this->get('renderer')->render($response, 'index.phtml');
+        $id = $this->get('table')->insert($urlData['name'], $create);
+        return $response->withRedirect("/urls/{$id}");
     } else {
         $params = [
             'urlData' => $urlData,
-            'errors' => 'Некорректный url'
+            'errors' => $v->errors()
         ];
         return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
     }
-})->setName('index.urls');
+});
 
 $app->get('/urls', function ($request, $response) {
     $urls = $this->get('table')->selectAll();
     $params = [
         'urls' => $urls
+    ];
+    return $this->get('renderer')->render($response, 'urls.phtml', $params);
+})->setName('urls');
+
+$app->get('/urls/{id}', function ($request, $response, $args) {
+    $id = $args['id'];
+    $url = $this->get('table')->select($id);
+    $params = [
+        'url' => $url
     ];
     return $this->get('renderer')->render($response, 'show.phtml', $params);
 })->setName('show');

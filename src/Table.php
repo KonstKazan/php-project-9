@@ -27,4 +27,16 @@ class Table
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function select($id)
+    {
+        $sql = 'SELECT * FROM urls WHERE id = ?';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindValue(':id', $id);
+        // return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

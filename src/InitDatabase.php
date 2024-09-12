@@ -13,7 +13,7 @@ class InitDatabase
 
     public function initTables()
     {
-        $initFilePath = implode('/', [dirname(__DIR__), 'init.sql']);
+        $initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
         $initSql = file_get_contents($initFilePath);
         $this->pdo->exec($initSql);
     }
