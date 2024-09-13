@@ -9,8 +9,9 @@ use Valitron\Validator;
 use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
-use PageAnalyzer\InitDatabase;
 use PageAnalyzer\Table;
+
+session_start();
 
 $conn = new Connection();
 $pdo = $conn->connect();
@@ -46,9 +47,14 @@ $app->post('/urls', function ($request, $response) use ($router) {
     $v = new Valitron\Validator($urlData);
     $v->rule('required', 'name')->message('URL не должен быть пустым');
     $v->rule('url', 'name')->message('Некорректный URL');
-    if ($v->validate()) {
+    if ($this->get('table')->getId($urlData['name'])) {
+        $id = $this->get('table')->getId($urlData['name']);
+        $this->get('flash')->addMessage('success', 'Страница уже существует');
+        return $response->withRedirect("/urls/{$id}");
+    } elseif ($v->validate()) {
         $create = Carbon::now();
         $id = $this->get('table')->insert($urlData['name'], $create);
+        $this->get('flash')->addMessage('success', 'Страница была успешно добавлена');
         return $response->withRedirect("/urls/{$id}");
     } else {
         $params = [
@@ -70,8 +76,10 @@ $app->get('/urls', function ($request, $response) {
 $app->get('/urls/{id}', function ($request, $response, $args) {
     $id = $args['id'];
     $url = $this->get('table')->select($id);
+    $messages = $this->get('flash')->getMessages();
     $params = [
-        'url' => $url
+        'url' => $url,
+        'flash' => $messages
     ];
     return $this->get('renderer')->render($response, 'show.phtml', $params);
 })->setName('show');

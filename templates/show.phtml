@@ -31,7 +31,11 @@
         </nav>
     </header>
 
-    
+    <?php if (isset($flash['success'])) : ?>
+    <div class="alert alert-success" role="alert">
+        <?php print_r($flash['success'][0]); ?>
+    </div>
+    <?php endif; ?>
 
 
     <main class="flex-grow-1">
