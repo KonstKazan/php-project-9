@@ -19,7 +19,7 @@ $conn->initTables($pdo);
 
 $container = new Container();
 $container->set('renderer', function () {
-    return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
+    return new PhpRenderer(__DIR__ . '/../templates');
 });
 
 $container->set('flash', function () {
@@ -44,18 +44,20 @@ $app->get('/', function ($request, $response) {
 
 $app->post('/urls', function ($request, $response) use ($router) {
     $urlData = $request->getParsedBodyParam('url');
+
     $v = new Validator($urlData);
     $v->rule('required', 'name')->message('URL не должен быть пустым');
     $v->rule('url', 'name')->message('Некорректный URL');
+
     if ($this->get('table')->getId($urlData['name'])) {
         $id = $this->get('table')->getId($urlData['name']);
         $this->get('flash')->addMessage('success', 'Страница уже существует');
-        return $response->withRedirect("/urls/{$id}");
+        return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     } elseif ($v->validate()) {
         $create = Carbon::now();
         $id = $this->get('table')->insert($urlData['name'], $create);
         $this->get('flash')->addMessage('success', 'Страница была успешно добавлена');
-        return $response->withRedirect("/urls/{$id}");
+        return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     } else {
         $params = [
             'urlData' => $urlData,
