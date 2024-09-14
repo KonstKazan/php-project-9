@@ -21,7 +21,7 @@ class Table
         return $this->pdo->lastInsertId('urls_id_seq');
     }
 
-    public function getId($url): ?int
+    public function getId($url)
     {
         $sql = 'SELECT id FROM urls WHERE name = ?';
         $stmt = $this->pdo->prepare($sql);
