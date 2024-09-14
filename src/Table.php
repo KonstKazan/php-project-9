@@ -21,13 +21,17 @@ class Table
         return $this->pdo->lastInsertId('urls_id_seq');
     }
 
-    public function getId($url)
+    public function getId($url): ?int
     {
         $sql = 'SELECT id FROM urls WHERE name = ?';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$url]);
         $id = $stmt->fetch();
-        return $id['id'];
+        if ($id) {
+            return $id['id'];
+        } else {
+            return null;
+        }
     }
 
     public function selectAll(): ?array
