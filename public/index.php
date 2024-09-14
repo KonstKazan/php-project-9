@@ -44,7 +44,7 @@ $app->get('/', function ($request, $response) {
 
 $app->post('/urls', function ($request, $response) use ($router) {
     $urlData = $request->getParsedBodyParam('url');
-    $v = new Valitron\Validator($urlData);
+    $v = new Validator($urlData);
     $v->rule('required', 'name')->message('URL не должен быть пустым');
     $v->rule('url', 'name')->message('Некорректный URL');
     if ($this->get('table')->getId($urlData['name'])) {
