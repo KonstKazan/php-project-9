@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
 use PageAnalyzer\Table;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\TransferException;
 
 session_start();
 
@@ -69,7 +71,6 @@ $app->post('/urls', function ($request, $response) use ($router) {
 
 $app->get('/urls', function ($request, $response) {
     $urls = $this->get('table')->selectAll();
-    $lastCheck = $this->get('table');
     $params = [
         'urls' => $urls
     ];
@@ -92,7 +93,21 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($router) {
     $id = $args['id'];
     $create = Carbon::now();
-    $this->get('table')->insertCheck($id, $create);
+    $url = $this->get('table')->select($id);
+    $urlName = $url['name'];
+    $client = new GuzzleHttp\Client();
+    try {
+        $res = $client->request('GET', "$urlName");
+    } catch (TransferException $e) {
+        $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
+        return $response->withRedirect($router->urlFor('show', ['id' => $id]));
+    }
+    $status = $res->getStatusCode();
+    // $tags = get_meta_tags('http://hexlet.io');
+    $h = 1;
+    $title = 1;
+    $description = 1;
+    $this->get('table')->insertCheck($id, $status, $h, $title, $description, $create);
     $this->get('flash')->addMessage('success', 'Страница была успешно проверена');
     return $response->withRedirect($router->urlFor('show', ['id' => $id]));
 });

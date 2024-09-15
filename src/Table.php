@@ -39,7 +39,8 @@ class Table
         $sql = 'SELECT DISTINCT on (urls.id)
                     urls.id,
                     urls.name,
-                    url_checks.created_at
+                    url_checks.created_at,
+                    url_checks.status_code
                 FROM urls
                 LEFT JOIN url_checks ON
                     urls.id = url_checks.url_id';
@@ -55,11 +56,17 @@ class Table
         return $stmt->fetch();
     }
 
-    public function insertCheck($id, $create)
+    public function insertCheck($id, $status, $h, $title, $description, $create)
     {
-        $sql = 'INSERT INTO url_checks(url_id, status_code, h1, title, description, created_at) VALUES(:url_id, 1, 1, 1, 1, :create)';
+        $sql = 'INSERT INTO
+                    url_checks(url_id, status_code, h1, title, description, created_at)
+                    VALUES(:url_id, :status_code, :h1, :title, :description, :create)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':url_id', $id);
+        $stmt->bindValue(':status_code', $status);
+        $stmt->bindValue(':h1', $h);
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':description', $description);
         $stmt->bindValue(':create', $create);
         $stmt->execute();
         return $this->pdo->lastInsertId('url_checks_id_seq');
