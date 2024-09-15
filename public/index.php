@@ -69,6 +69,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
 
 $app->get('/urls', function ($request, $response) {
     $urls = $this->get('table')->selectAll();
+    $lastCheck = $this->get('table');
     $params = [
         'urls' => $urls
     ];
@@ -78,12 +79,22 @@ $app->get('/urls', function ($request, $response) {
 $app->get('/urls/{id}', function ($request, $response, $args) {
     $id = $args['id'];
     $url = $this->get('table')->select($id);
+    $check = $this->get('table')->selectAllCheck($id);
     $messages = $this->get('flash')->getMessages();
     $params = [
         'url' => $url,
+        'check' => $check,
         'flash' => $messages
     ];
     return $this->get('renderer')->render($response, 'show.phtml', $params);
 })->setName('show');
+
+$app->post('/urls/{id}/checks', function ($request, $response, $args) use ($router) {
+    $id = $args['id'];
+    $create = Carbon::now();
+    $this->get('table')->insertCheck($id, $create);
+    $this->get('flash')->addMessage('success', 'Страница была успешно проверена');
+    return $response->withRedirect($router->urlFor('show', ['id' => $id]));
+});
 
 $app->run();

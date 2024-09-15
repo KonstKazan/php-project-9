@@ -36,7 +36,13 @@ class Table
 
     public function selectAll(): ?array
     {
-        $sql = 'SELECT id, name, created_at FROM urls ORDER BY created_at DESC';
+        $sql = 'SELECT DISTINCT on (urls.id)
+                    urls.id,
+                    urls.name,
+                    url_checks.created_at
+                FROM urls
+                LEFT JOIN url_checks ON
+                    urls.id = url_checks.url_id';
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -47,5 +53,23 @@ class Table
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch();
+    }
+
+    public function insertCheck($id, $create)
+    {
+        $sql = 'INSERT INTO url_checks(url_id, status_code, h1, title, description, created_at) VALUES(:url_id, 1, 1, 1, 1, :create)';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':url_id', $id);
+        $stmt->bindValue(':create', $create);
+        $stmt->execute();
+        return $this->pdo->lastInsertId('url_checks_id_seq');
+    }
+
+    public function selectAllCheck($id): ?array
+    {
+        $sql = 'SELECT id, url_id, status_code, h1, title, description, created_at FROM url_checks WHERE url_id = ? ORDER BY id DESC';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

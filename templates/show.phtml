@@ -60,7 +60,7 @@
     </table>
   </div>
   <h2 class="mt-5 mb-3">Проверки</h2>
-  <form method="post" action="/urls/1/checks">
+  <form method="post" action="/urls/<?= $url['id'] ?>/checks">
     <input type="submit" class="btn btn-primary" value="Запустить проверку">
   </form>
   <table class="table table-bordered table-hover" data-test="checks">
@@ -73,6 +73,16 @@
         <th>description</th>
         <th>Дата создания</th>
       </tr>
+      <?php foreach ($check as $values) : ?>
+      <tr>
+        <th><?= $values['id'] ?></th>
+        <th><?= $values['status_code'] ?></th>
+        <th><?= $values['h1'] ?></th>
+        <th><?= $values['title'] ?></th>
+        <th><?= $values['description'] ?></th>
+        <th><?= $values['created_at'] ?></th>
+      </tr>
+      <?php endforeach; ?>
     </thead>
     <tbody>
           </tbody>
