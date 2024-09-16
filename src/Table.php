@@ -74,7 +74,17 @@ class Table
 
     public function selectAllCheck($id): ?array
     {
-        $sql = 'SELECT id, url_id, status_code, h1, title, description, created_at FROM url_checks WHERE url_id = ? ORDER BY id DESC';
+        $sql = 'SELECT 
+                    id,
+                    url_id,
+                    status_code,
+                    h1,
+                    title,
+                    description,
+                    created_at
+                FROM url_checks
+                WHERE url_id = ?
+                ORDER BY id DESC';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
