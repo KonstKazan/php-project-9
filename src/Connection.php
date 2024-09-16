@@ -3,10 +3,11 @@
 namespace PageAnalyzer;
 
 use Dotenv\Dotenv;
+use PDO;
 
 class Connection
 {
-    public function connect()
+    public function connect(): PDO
     {
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
         $dotenv->safeLoad();
@@ -26,7 +27,7 @@ class Connection
         return $conn;
     }
 
-    public function initTables($pdo)
+    public function initTables(PDO $pdo): void
     {
         $initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
         $initSql = file_get_contents($initFilePath);

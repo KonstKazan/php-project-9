@@ -10,8 +10,9 @@ use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
 use PageAnalyzer\Table;
-use GuzzleHttp\Psr7;
+use DiDom\Document;
 use GuzzleHttp\Exception\TransferException;
+use Slim\Flash\Messages;
 
 session_start();
 
@@ -25,7 +26,7 @@ $container->set('renderer', function () {
 });
 
 $container->set('flash', function () {
-    return new \Slim\Flash\Messages();
+    return new Messages();
 });
 
 $container->set('table', function () use ($pdo) {
@@ -98,15 +99,22 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $client = new GuzzleHttp\Client();
     try {
         $res = $client->request('GET', "$urlName");
-    } catch (TransferException $e) {
+    } catch (TransferException) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     }
     $status = $res->getStatusCode();
-    // $tags = get_meta_tags('http://hexlet.io');
-    $h = 1;
-    $title = 1;
-    $description = 1;
+
+    $document = new Document($urlName, true);
+    $findDesc = optional($document)->find('meta[name=description]');
+    $description = optional($findDesc[0])->getAttribute('content');
+
+    $findH = optional($document)->find('h1');
+    $h = optional($findH[0])->text();
+
+    $findTitle = optional($document)->find('title');
+    $title = optional($findTitle[0])->text();
+
     $this->get('table')->insertCheck($id, $status, $h, $title, $description, $create);
     $this->get('flash')->addMessage('success', 'Страница была успешно проверена');
     return $response->withRedirect($router->urlFor('show', ['id' => $id]));

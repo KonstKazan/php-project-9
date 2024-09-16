@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS url_checks (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     url_id INTEGER NOT NULL,
     status_code VARCHAR(255) NOT NULL,
-    h1 VARCHAR(255) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    h1 VARCHAR(255),
+    title VARCHAR(255),
+    description VARCHAR(255),
     created_at VARCHAR(255) NOT NULL
 );

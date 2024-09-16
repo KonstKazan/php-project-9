@@ -56,7 +56,7 @@ class Table
         return $stmt->fetch();
     }
 
-    public function insertCheck($id, $status, $h, $title, $description, $create)
+    public function insertCheck($id, $status, $h, $title, $description, $create): int
     {
         $sql = 'INSERT INTO
                     url_checks(url_id, status_code, h1, title, description, created_at)
