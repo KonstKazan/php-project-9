@@ -9,7 +9,8 @@ use Valitron\Validator;
 use Carbon\Carbon;
 use Slim\Middleware\MethodOverrideMiddleware;
 use PageAnalyzer\Connection;
-use PageAnalyzer\Table;
+use PageAnalyzer\Urls;
+use PageAnalyzer\UrlChecks;
 use DiDom\Document;
 use GuzzleHttp\Exception\TransferException;
 use Slim\Flash\Messages;
@@ -29,8 +30,12 @@ $container->set('flash', function () {
     return new Messages();
 });
 
-$container->set('table', function () use ($pdo) {
-    return new Table($pdo);
+$container->set('urls', function () use ($pdo) {
+    return new Urls($pdo);
+});
+
+$container->set('urls_checks', function () use ($pdo) {
+    return new UrlChecks($pdo);
 });
 
 $app = AppFactory::createFromContainer($container);
@@ -52,13 +57,13 @@ $app->post('/urls', function ($request, $response) use ($router) {
     $v->rule('required', 'name')->message('URL не должен быть пустым');
     $v->rule('url', 'name')->message('Некорректный URL');
 
-    if ($this->get('table')->getId($urlData['name'])) {
-        $id = $this->get('table')->getId($urlData['name']);
+    if ($this->get('urls')->getId($urlData['name'])) {
+        $id = $this->get('urls')->getId($urlData['name']);
         $this->get('flash')->addMessage('success', 'Страница уже существует');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     } elseif ($v->validate()) {
         $create = Carbon::now();
-        $id = $this->get('table')->insert($urlData['name'], $create);
+        $id = $this->get('urls')->create($urlData['name'], $create);
         $this->get('flash')->addMessage('success', 'Страница была успешно добавлена');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     } else {
@@ -71,7 +76,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
 });
 
 $app->get('/urls', function ($request, $response) {
-    $urls = $this->get('table')->selectAll();
+    $urls = $this->get('urls')->getAll();
     $params = [
         'urls' => $urls
     ];
@@ -80,8 +85,8 @@ $app->get('/urls', function ($request, $response) {
 
 $app->get('/urls/{id}', function ($request, $response, $args) {
     $id = $args['id'];
-    $url = $this->get('table')->select($id);
-    $check = $this->get('table')->selectAllCheck($id);
+    $url = $this->get('urls')->get($id);
+    $check = $this->get('urls_checks')->getAll($id);
     $messages = $this->get('flash')->getMessages();
     $params = [
         'url' => $url,
@@ -94,7 +99,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($router) {
     $id = $args['id'];
     $create = Carbon::now();
-    $url = $this->get('table')->select($id);
+    $url = $this->get('urls')->get($id);
     $urlName = $url['name'];
     $client = new GuzzleHttp\Client();
     try {
@@ -115,7 +120,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $findTitle = optional($document)->find('title');
     $title = optional($findTitle[0])->text();
 
-    $this->get('table')->insertCheck($id, $status, $h, $title, $description, $create);
+    $this->get('urls_checks')->create($id, $status, $h, $title, $description, $create);
     $this->get('flash')->addMessage('success', 'Страница была успешно проверена');
     return $response->withRedirect($router->urlFor('show', ['id' => $id]));
 });
