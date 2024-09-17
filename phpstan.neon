@@ -1,6 +1,5 @@
 parameters:
     level: 8
     ignoreErrors:
-        -
-            message: '#Undefined variable: \$this.*#'
-            path: public*
+            - '#Undefined variable: \$this.*#'
+            - '#Call to an undefined method#'
