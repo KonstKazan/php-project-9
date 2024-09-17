@@ -6,11 +6,6 @@
             "PageAnalyzer\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-          "PageAnalyzer\\Tests\\": "tests"
-        }
-      },
     "authors": [
         {
             "name": "Konstantin",
@@ -18,7 +13,7 @@
         }
     ],
     "require": {
-        "php" : ">=7.4",
+        "php" : ">=8.2",
         "ext-mbstring": "*",
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
