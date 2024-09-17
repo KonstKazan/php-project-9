@@ -4,18 +4,19 @@
 [![Actions Status](https://github.com/KonstKazan/php-project-9/actions/workflows/Workflow.yml/badge.svg)](https://github.com/KonstKazan/php-project-9/actions)
 
 
-#### An application for checking websites for SEO suitability
+## An application for checking websites for SEO suitability
 
 
 
-### Establishing a connection to the database
+#### Establishing a connection to the database
 You need to create a file.env in the root of the application and fill it in using the example file .env.example
 
 
-## Setup
+#### Setup
 ```sh
 $ git clone https://github.com/KonstKazan/php-project-9.git
 $ cd php-project-9
 $ make install
 $ make start
 ```
+Go to <u>localhost:8000</u> in the your browser
