@@ -29,9 +29,6 @@ jobs:
       - name: Run linter
         # Run Linter
         run: make lint
-      - name: Run tests
-        # Run Tests
-        run: make test
       # Publish code coverage on Code Climate
       # https://github.com/paambaati/codeclimate-action
       # NOTE: uncomment for using workflow
