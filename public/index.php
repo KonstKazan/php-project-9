@@ -121,7 +121,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $title = optional($findTitle[0])->text();
 
     $this->get('urls_checks')->create($id, $status, $h, $title, $description, $create);
-    $this->get('flash')->addMessage('success', 'Страница была успешно проверена');
+    $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     return $response->withRedirect($router->urlFor('show', ['id' => $id]));
 });
 
