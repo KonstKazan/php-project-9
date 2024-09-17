@@ -64,7 +64,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
     } elseif ($v->validate()) {
         $create = Carbon::now();
         $id = $this->get('urls')->create($urlData['name'], $create);
-        $this->get('flash')->addMessage('success', 'Страница была успешно добавлена');
+        $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
     } else {
         $params = [
