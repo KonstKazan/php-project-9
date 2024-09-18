@@ -76,6 +76,8 @@
         <th>description</th>
         <th>Дата создания</th>
       </tr>
+    </thead>
+    <tbody>
       <?php foreach ($check as $values) : ?>
       <tr>
         <td><?= $values['id'] ?></td>
@@ -86,8 +88,6 @@
         <td><?= $values['created_at'] ?></td>
       </tr>
       <?php endforeach; ?>
-    </thead>
-    <tbody>
           </tbody>
   </table>
         </div>
