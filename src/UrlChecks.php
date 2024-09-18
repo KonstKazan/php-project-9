@@ -29,7 +29,7 @@ class UrlChecks
         return $this->pdo->lastInsertId('url_checks_id_seq');
     }
 
-    public function getAll($id): ?array
+    public function getAll(int $id): ?array
     {
         $sql = 'SELECT 
                     id,

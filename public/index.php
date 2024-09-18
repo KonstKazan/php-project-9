@@ -112,7 +112,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
 
     $document = new Document($urlName, true);
     $findDesc = $document->find('meta[name=description]');
-    $description = optional($findDesc[0])->getAttribute('content');
+    $description = optional($findDesc[0])->content;
 
     $findH = $document->find('h1');
     $h = optional($findH[0])->text();
