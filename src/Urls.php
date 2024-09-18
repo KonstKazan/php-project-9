@@ -2,16 +2,18 @@
 
 namespace PageAnalyzer;
 
+use PDO;
+
 class Urls
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function create($name, $created): int
+    public function create(string $name, string $created): int
     {
         $sql = 'INSERT INTO urls(name, created_at) VALUES(:name, :create)';
         $stmt = $this->pdo->prepare($sql);
@@ -21,7 +23,7 @@ class Urls
         return $this->pdo->lastInsertId('urls_id_seq');
     }
 
-    public function getId($url): ?int
+    public function getId(string $url): ?int
     {
         $sql = 'SELECT id FROM urls WHERE name = ?';
         $stmt = $this->pdo->prepare($sql);
@@ -48,7 +50,7 @@ class Urls
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function get($id): ?array
+    public function get(int $id): ?array
     {
         $sql = 'SELECT * FROM urls WHERE id = ?';
         $stmt = $this->pdo->prepare($sql);

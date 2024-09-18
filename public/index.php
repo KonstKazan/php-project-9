@@ -111,13 +111,13 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $status = $res->getStatusCode();
 
     $document = new Document($urlName, true);
-    $findDesc = optional($document)->find('meta[name=description]');
+    $findDesc = $document->find('meta[name=description]');
     $description = optional($findDesc[0])->getAttribute('content');
 
-    $findH = optional($document)->find('h1');
+    $findH = $document->find('h1');
     $h = optional($findH[0])->text();
 
-    $findTitle = optional($document)->find('title');
+    $findTitle = $document->find('title');
     $title = optional($findTitle[0])->text();
 
     $this->get('urls_checks')->create($id, $status, $h, $title, $description, $create);

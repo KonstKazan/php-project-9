@@ -2,16 +2,18 @@
 
 namespace PageAnalyzer;
 
+use PDO;
+
 class UrlChecks
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function create($id, $status, $h, $title, $description, $create): int
+    public function create(int $id, int $status, string $h, string $title, string $description, string $create): int
     {
         $sql = 'INSERT INTO
                     url_checks(url_id, status_code, h1, title, description, created_at)
