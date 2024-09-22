@@ -13,8 +13,14 @@ class UrlChecks
         $this->pdo = $pdo;
     }
 
-    public function create(int $id, int $status, string $h, string $title, string $description, string $create): int
-    {
+    public function create(
+        int $id,
+        int $status,
+        string|null $h,
+        string|null $title,
+        string|null $description,
+        string $create
+    ): int {
         $sql = 'INSERT INTO
                     url_checks(url_id, status_code, h1, title, description, created_at)
                     VALUES(:url_id, :status_code, :h1, :title, :description, :create)';
