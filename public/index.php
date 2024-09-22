@@ -120,12 +120,12 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
 
     $h = '';
     if ($document->has('h1') !== null) {
-        $findH = $document->find('h1');
-        $h = optional($findH[0])->text();
+        $findH = $document->first('h1');
+        $h = optional($findH)->text();
     }
 
-    $findTitle = $document->find('title');
-    $title = optional($findTitle[0])->text();
+    $findTitle = $document->first('title');
+    $title = optional($findTitle)->text();
 
     $this->get('urls_checks')->create($id, $status, $h, $title, $description, $create);
     $this->get('flash')->addMessage('success', 'Страница успешно проверена');
