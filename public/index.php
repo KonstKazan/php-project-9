@@ -111,6 +111,8 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $status = $res->getStatusCode();
 
     $document = new Document($urlName, true);
+
+    $description = '';
     if ($document->has('meta[name=description]')) {
         $findDesc = $document->find('meta[name=description]');
         $description = $findDesc[0]->getAttribute('content');
