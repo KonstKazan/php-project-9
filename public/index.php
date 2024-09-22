@@ -118,9 +118,11 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
         $description = $findDesc[0]->getAttribute('content');
     }
 
-
-    $findH = $document->find('h1');
-    $h = optional($findH[0])->text();
+    $h = '';
+    if ($document->has('h1') !== null) {
+        $findH = $document->find('h1');
+        $h = optional($findH[0])->text();
+    }
 
     $findTitle = $document->find('title');
     $title = optional($findTitle[0])->text();
