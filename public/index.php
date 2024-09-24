@@ -14,6 +14,8 @@ use PageAnalyzer\UrlChecks;
 use DiDom\Document;
 use GuzzleHttp\Exception\TransferException;
 use Slim\Flash\Messages;
+use Slim\Http\ServerRequest;
+use Slim\Exception\HttpNotFoundException;
 
 session_start();
 
@@ -41,8 +43,29 @@ $container->set('urls_checks', function () use ($pdo) {
 $app = AppFactory::createFromContainer($container);
 $router = $app->getRouteCollector()->getRouteParser();
 
-$app->addErrorMiddleware(true, true, true);
+
+$app->addRoutingMiddleware();
+
+
+$customErrorHandler = function (
+    ServerRequest $request,
+    Throwable $exception,
+) use ($app) {
+
+
+    $response = $app->getResponseFactory()->createResponse();
+
+    return $this->get('renderer')->render($response, 'error404.phtml');
+};
+
+
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setDefaultErrorHandler($customErrorHandler);
+
+
+
 $app->add(MethodOverrideMiddleware::class);
+
 
 
 
@@ -84,8 +107,11 @@ $app->get('/urls', function ($request, $response) {
 })->setName('urls');
 
 $app->get('/urls/{id}', function ($request, $response, $args) {
-    $id = $args['id'];
+    $id = htmlspecialchars($args['id']);
     $url = $this->get('urls')->get($id);
+    if (!$url) {
+        throw new HttpNotFoundException($request);
+    }
     $check = $this->get('urls_checks')->getAll($id);
     $messages = $this->get('flash')->getMessages();
     $params = [
@@ -97,7 +123,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 })->setName('show');
 
 $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($router) {
-    $id = $args['id'];
+    $id = htmlspecialchars($args['id']);
     $create = Carbon::now();
     $url = $this->get('urls')->get($id);
     $urlName = $url['name'];

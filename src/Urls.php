@@ -50,7 +50,7 @@ class Urls
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function get(int $id): ?array
+    public function get(int $id): array|false
     {
         $sql = 'SELECT * FROM urls WHERE id = ?';
         $stmt = $this->pdo->prepare($sql);
