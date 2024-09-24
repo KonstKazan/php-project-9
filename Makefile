@@ -9,8 +9,8 @@ validate:
 	composer validate --no-check-publish
 
 lint:
-	composer exec --verbose phpcs -- --standard=PSR12 public
-	composer exec --verbose phpstan analyse public
+	composer exec --verbose phpcs -- --standard=PSR12 public src
+	composer exec --verbose phpstan analyse public src
 
 lint-fix:
-	composer exec --verbose phpcbf -- --standard=PSR12 public
+	composer exec --verbose phpcbf -- --standard=PSR12 public src

@@ -1,5 +1,5 @@
 parameters:
-    level: 6
+    level: 4
     ignoreErrors:
             - '#Undefined variable: \$this.*#'
             - '#Call to an undefined method#'

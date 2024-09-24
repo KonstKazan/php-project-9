@@ -13,7 +13,7 @@ class Urls
         $this->pdo = $pdo;
     }
 
-    public function create(string $name, string $created): int
+    public function create(string $name, string $created): string|false
     {
         $sql = 'INSERT INTO urls(name, created_at) VALUES(:name, :create)';
         $stmt = $this->pdo->prepare($sql);

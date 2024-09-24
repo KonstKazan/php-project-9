@@ -20,7 +20,7 @@ class UrlChecks
         string|null $title,
         string|null $description,
         string $create
-    ): int {
+    ): string|false {
         $sql = 'INSERT INTO
                     url_checks(url_id, status_code, h1, title, description, created_at)
                     VALUES(:url_id, :status_code, :h1, :title, :description, :create)';
