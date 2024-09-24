@@ -14,7 +14,7 @@ class Connection
         if (isset($_ENV['DATABASE_URL'])) {
             $databaseUrl = parse_url($_ENV['DATABASE_URL']);
         } else {
-            $databaseUrl = parse_url($_ENV['SECRET_KEY']);
+            throw new \Exception("Database connection error!");
         }
         $username = $databaseUrl['user'];
         $password = $databaseUrl['pass'];
