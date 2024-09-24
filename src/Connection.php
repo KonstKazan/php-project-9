@@ -32,7 +32,7 @@ class Connection
         $initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
         $initSql = file_get_contents($initFilePath);
         if ($initSql === false) {
-            throw new \Exception("Path to file is invalid!");
+            throw new \Exception("File not found: database.sql");
         }
         $pdo->exec($initSql);
     }
