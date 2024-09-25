@@ -12,6 +12,7 @@ use PageAnalyzer\Connection;
 use PageAnalyzer\Urls;
 use PageAnalyzer\UrlChecks;
 use DiDom\Document;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
 use Slim\Flash\Messages;
 use Slim\Http\ServerRequest;
@@ -73,6 +74,14 @@ $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('index');
 
+$app->get('/error500', function ($request, $response) {
+    $messages = $this->get('flash')->getMessages();
+    $params = [
+        'flash' => $messages
+    ];
+    return $this->get('renderer')->render($response, 'error500.phtml', $params);
+})->setName('error500');
+
 $app->post('/urls', function ($request, $response) use ($router) {
     $urlData = $request->getParsedBodyParam('url');
 
@@ -130,9 +139,12 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $client = new GuzzleHttp\Client();
     try {
         $res = $client->request('GET', "$urlName");
-    } catch (TransferException) {
+    } catch (ConnectException) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
+    } catch (TransferException) {
+        $this->get('flash')->addMessage('warning', 'Проверка была выполнена успешно, но сервер ответил с ошибкой');
+        return $response->withRedirect($router->urlFor('error500'));
     }
     $status = $res->getStatusCode();
 
