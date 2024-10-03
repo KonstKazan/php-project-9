@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<?php include('head.html'); ?>
-<body class="min-vh-100 d-flex flex-column">
-<?php include('header.html'); ?>
+<?php include('header.phtml'); ?>
 <main class="flex-grow-1">
-        <div class="container-lg mt-3">
-                      <h1></h1>
-                    <div class="row">
-    <div class="col-12 col-md-10 col-lg-8 mx-auto border rounded-3 bg-light p-5">
-        <h1 class="display-3">Анализатор страниц</h1>
-        <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
-        <form action="/urls" method="post" class="row" required>
-            <div class="col-8">
-            <label for="text" class="visually-hidden">Url для проверки</label>
-            <input
-            type="text"
-            name="url[name]"
-            value=""
-            class="form-control form-control-lg
-            <?php if (isset($errors)) : ?>
-                <?= 'is-invalid' ?>
-            <?php endif ?>"
-            placeholder="https://www.example.com"
-            >
-            <?php if (isset($errors)) : ?>
-            <div class="invalid-feedback"><?php print_r($errors['name'][0]) ?></div>
-            <?php endif ?>
-                        </div>
-            <div class="col-2">
-                <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
+    <div class="container-lg mt-3">
+        <div class="row">
+            <div class="col-12 col-md-10 col-lg-8 mx-auto border rounded-3 bg-light p-5">
+                <h1 class="display-3">Анализатор страниц</h1>
+                <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
+                <form action="/urls" method="post" class="row" required>
+                    <div class="col-8">
+                    <label for="text" class="visually-hidden">Url для проверки</label>
+                        <input
+                            type="text"
+                            name="url[name]"
+                            value=""
+                            class="form-control form-control-lg
+                            <?php if (isset($errors)) : ?>
+                                <?= 'is-invalid' ?>
+                            <?php endif ?>"
+                            placeholder="https://www.example.com">
+                            <?php if (isset($errors)) : ?>
+                                <div class="invalid-feedback"><?php print_r($errors['name'][0]) ?></div>
+                            <?php endif ?>
+                    </div>
+                    <div class="col-2">
+                        <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-</div>
         </div>
-    </main>
-<?php include('footer.html'); ?>
-</body>
-</html>
+    </div>
+</main>
+<?php include('footer.phtml'); ?>

@@ -1,5 +1,6 @@
 {
     "name": "hexlet/code",
+    "description": "Application for checking websites for SEO suitability",
     "license": "MIT",
     "autoload": {
         "psr-4": {

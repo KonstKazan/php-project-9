@@ -1,39 +1,34 @@
-<html>
-<?php include('head.html'); ?>
-<body class="min-vh-100 d-flex flex-column">
-<?php include('header.html'); ?>
+<?php include('header.phtml'); ?>
 
-    <main class="flex-grow-1">
-        <div class="container-lg mt-3">
-                      <h1>Сайты</h1>
-                    <div class="table-responsive">
-  <table class="table table-bordered table-hover text-nowrap" data-test="urls">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Последняя проверка</th>
-        <th>Код ответа</th>
-      </tr>
-    </thead>
-      <tbody>
-      <?php foreach ($urls as $url) : ?>
-              <tr>
-          <td><?= $url['id'] ?></td>
-          <td>
-            <a href="/urls/<?= $url['id'] ?>">
-            <?= $url['name'] ?>
-            </a>
-          </td>
-          <td><?= $url['created_at'] ?></td>
-          <td><?= $url['status_code'] ?></td>
-        </tr>
-      <?php endforeach ?>
+<main class="flex-grow-1">
+    <div class="container-lg mt-3">
+        <h1>Сайты</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-nowrap" data-test="urls">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Последняя проверка</th>
+                        <th>Код ответа</th>
+                    </tr>
+                </thead>
+            <tbody>
+            <?php foreach ($urls as $url) : ?>
+                <tr>
+                    <td><?= $url['id'] ?></td>
+                    <td>
+                        <a href="/urls/<?= $url['id'] ?>">
+                            <?= $url['name'] ?>
+                        </a>
+                    </td>
+                    <td><?= $url['created_at'] ?></td>
+                    <td><?= $url['status_code'] ?></td>
+                </tr>
+            <?php endforeach ?>
             </tbody>
-  </table>
-</div>
+            </table>
         </div>
-    </main>
-    <?php include('footer.html'); ?>
-</body>
-</html>
+    </div>
+</main>
+<?php include('footer.phtml'); ?>

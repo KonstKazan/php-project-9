@@ -138,7 +138,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     $urlName = $url['name'];
     $client = new GuzzleHttp\Client();
     try {
-        $res = $client->request('GET', "$urlName");
+        $res = $client->request('GET', $urlName);
     } catch (ConnectException) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
         return $response->withRedirect($router->urlFor('show', ['id' => $id]));
